@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "dev": "parcel index.html",
-        "build": "parcel build index.html --out-dir dist/output && python3 ./cpp-bundle.py",
+        "build": "python3 ./clean.py && parcel build index.html --out-dir dist/output && python3 ./cpp-bundle.py",
         "bundle": "python3 ./cpp-bundle.py"
     },
     "keywords": [],
