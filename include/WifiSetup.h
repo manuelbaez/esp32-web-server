@@ -25,7 +25,7 @@ class WifiSetup
 
 public:
     void setCredentials(WifiCredentials *credentials);
-    WifiConnectionStatus connect();
+    WifiConnectionStatus* connect();
 
 private:
     WifiCredentials loadCredentialsFromEeprom();
