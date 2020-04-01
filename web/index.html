@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Test Page</title>
+    <link rel="stylesheet" href="./css/page-layout.css" />
+    <link rel="stylesheet" href="./css/input.css" />
+</head>
+
+<body>
+    <div id="main-container">
+        <h1 id="title">Smart Transfer Switch</h1>
+        <hr class="separator" />
+        <div class="container">
+            <div class="centered">
+                <div class="container fluid">
+                    <h2 class="title centered">Switch Control</h2>
+                    <button id="turn-on-button" class="button-success">
+              Encender
+            </button>
+                    <button id="turn-off-button" class="button-danger">Apagar</button>
+                </div>
+                <div class="container fluid">
+                    <h2 class="title">Wifi Setup</h2>
+                    <div class="container block">
+                        <form id="wifi-setup-form">
+                            <div class="form__group field">
+                                <input type="input" class="form__field" placeholder="SSID" name="ssid" id="ssid" required />
+                                <label for="ssid" class="form__label">SSID</label>
+                            </div>
+                            <div class="form__group field">
+                                <input type="password" class="form__field" placeholder="Password" name="password" id="password" required />
+                                <label for="password" class="form__label">Password</label>
+                            </div>
+                            <div class=" form__group">
+                                <button type="submit" id="wifi-connect-button" class="button-success">
+                                    Conectar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="./js/main.js"></script>
+</body>
+
+</html>
