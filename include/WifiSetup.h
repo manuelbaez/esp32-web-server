@@ -27,8 +27,8 @@ public:
     WifiSetup();
     void setCredentials(WifiCredentials *credentials);
     WifiConnectionStatus *connect();
-    static void loadCredentialsFromEeprom();
+    static void loadCredentialsFromEEPROM();
 
 private:
-    void saveCredentialsToEeprom();
+    void saveCredentialsToEEPROM();
 };

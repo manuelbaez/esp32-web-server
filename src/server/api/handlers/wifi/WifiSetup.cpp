@@ -12,7 +12,7 @@ WifiSetup ::WifiSetup()
 {
     WiFi.mode(WIFI_AP);
     WiFi.softAP(AP_SSID, AP_PSK);
-    loadCredentialsFromEeprom();
+    loadCredentialsFromEEPROM();
 }
 
 void WifiSetup::setCredentials(WifiCredentials *credentials)
@@ -36,7 +36,7 @@ WifiConnectionStatus *WifiSetup::connect()
             auto ssid = WiFi.SSID();
             auto connectionStatus = new WifiConnectionStatus(true, ip, ssid);
             Serial.println(connectionStatus->ip);
-            saveCredentialsToEeprom();
+            saveCredentialsToEEPROM();
             return connectionStatus;
         }
     }
@@ -44,34 +44,37 @@ WifiConnectionStatus *WifiSetup::connect()
     return new WifiConnectionStatus(false);
 }
 
-struct 
-{
-    String json;
-    String none;    
-} eeprom_data;
-
 const int wifiDataAddr = 1;
 
-void WifiSetup::saveCredentialsToEeprom()
+void WifiSetup::saveCredentialsToEEPROM()
 {
     EEPROM.begin(1024);
-    auto ssid = networkCredentials->ssid;
+    String ssid = networkCredentials->ssid;
     auto password = networkCredentials->password;
     DynamicJsonDocument dataJsonDocument(1024);
-    // dataJsonDocument["ssid"]= networkCredentials->ssid;
-    // serializeJson(dataJsonDocument, eeprom_data.json);
-    Serial.println(eeprom_data.json); 
-    eeprom_data.json="hola";
-    EEPROM.put(wifiDataAddr,eeprom_data);
+    dataJsonDocument["ssid"] = networkCredentials->ssid;
+    dataJsonDocument["password"]= networkCredentials->password;
+    char data[256] = {};
+    serializeJson(dataJsonDocument, data);
+    Serial.println(data);
+    EEPROM.put(wifiDataAddr, data);
     EEPROM.commit();
 };
 
-void WifiSetup::loadCredentialsFromEeprom()
+void WifiSetup::loadCredentialsFromEEPROM()
 {
     Serial.println("");
     Serial.println("Loading Credentials");
     EEPROM.begin(1024);
-    EEPROM.get(wifiDataAddr, eeprom_data);
+    char _ssid[256];
+    EEPROM.get(wifiDataAddr, _ssid);
     Serial.println("");
-    Serial.println(eeprom_data.json);
+    Serial.println(_ssid);
+};
+
+static void ClearEEPROM(){
+ for (unsigned int i = 0; i < EEPROM.length(); i++)
+    {
+        EEPROM.write(i, 0);
+    }
 };

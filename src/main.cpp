@@ -13,7 +13,7 @@ void setup()
   addWebAppRoutes(&webserver);
   addApiRoutes(&webserver);
   webserver.begin();
-  WifiSetup::loadCredentialsFromEeprom();
+  WifiSetup::loadCredentialsFromEEPROM();
 }
 
 void loop()
