@@ -1,9 +1,9 @@
 #include "Arduino.h"
 #include "Routes.h"
 #include "../../lib/aruino-json/ArduinoJson.h"
-#include "WifiSetup.h"
+#include "GlobalConfig.h"
 
-auto wifi = new WifiSetup();
+auto wifi =  WiFiSetup::wifiClient;
 
 void addApiRoutes(ESP8266WebServer *server)
 {
@@ -22,8 +22,7 @@ void addApiRoutes(ESP8266WebServer *server)
         deserializeJson(requestDocument, requestJson);
         String ssid = requestDocument["ssid"];
         String password = requestDocument["password"];
-        auto credentials = new WifiCredentials(ssid, password);
-        wifi->setCredentials(credentials);
+        wifi->setCredentials(ssid, password);
         auto connectionStatus = wifi->connect();
 
         DynamicJsonDocument responseDocument(1024);
@@ -34,6 +33,7 @@ void addApiRoutes(ESP8266WebServer *server)
         serializeJson(responseDocument, serializedJson);
         if (connectionStatus->connected)
         {
+            GlobalConfig::save();
             server->send(200, "application/json", serializedJson);
         }
         else

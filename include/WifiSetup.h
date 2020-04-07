@@ -1,34 +1,31 @@
 #include "WString.h"
 
-class WifiCredentials
+class WiFiCredentials
 {
 public:
     String ssid;
     String password;
-    WifiCredentials(String _ssid, String _password);
+    WiFiCredentials();
+    WiFiCredentials(String _ssid, String _password);
 };
 
-class WifiConnectionStatus
+class WiFiConnectionStatus
 {
 public:
     bool connected;
     String ip;
     String ssid;
-    WifiConnectionStatus(bool connected);
-    WifiConnectionStatus(bool connected, String ip, String ssid);
+    WiFiConnectionStatus(bool connected);
+    WiFiConnectionStatus(bool connected, String ip, String ssid);
 };
 
-class WifiSetup
+class WiFiSetup
 {
 
-    WifiCredentials *networkCredentials;
-
 public:
-    WifiSetup();
-    void setCredentials(WifiCredentials *credentials);
-    WifiConnectionStatus *connect();
-    static void loadCredentialsFromEEPROM();
-
-private:
-    void saveCredentialsToEEPROM();
+    WiFiCredentials *networkCredentials;
+    static WiFiSetup *wifiClient;
+    WiFiSetup();
+    void setCredentials(String ssid, String password);
+    WiFiConnectionStatus *connect(bool startup=false);
 };

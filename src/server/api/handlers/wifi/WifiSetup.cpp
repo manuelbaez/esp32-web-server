@@ -1,4 +1,4 @@
-#include "WifiSetup.h"
+#include "GlobalConfig.h"
 #include <ESP8266WiFi.h>
 #include <EEPROM.h>
 #include "../../lib/aruino-json/ArduinoJson.h"
@@ -8,23 +8,27 @@
 #define AP_PSK "123456789"
 #endif
 
-WifiSetup ::WifiSetup()
+WiFiSetup *WiFiSetup::wifiClient = new WiFiSetup();
+
+WiFiSetup ::WiFiSetup()
 {
     WiFi.mode(WIFI_AP);
     WiFi.softAP(AP_SSID, AP_PSK);
-    loadCredentialsFromEEPROM();
+    networkCredentials = new WiFiCredentials();
 }
 
-void WifiSetup::setCredentials(WifiCredentials *credentials)
+void WiFiSetup::setCredentials(String ssid, String password)
 {
-    networkCredentials = credentials;
+    networkCredentials->ssid = ssid;
+    networkCredentials->password = password;
 }
 
-WifiConnectionStatus *WifiSetup::connect()
+WiFiConnectionStatus *WiFiSetup::connect(bool startup)
 {
     WiFi.mode(WIFI_AP_STA);
     WiFi.begin(networkCredentials->ssid, networkCredentials->password);
-    for (uint i = 0; i < 20; i++)
+    int maxLookoutCycles = (startup) ? INT_MAX : 20;
+    for (uint i = 0; i < maxLookoutCycles; i++)
     {
         delay(500);
         digitalWrite(LED_BUILTIN, 0);
@@ -34,47 +38,12 @@ WifiConnectionStatus *WifiSetup::connect()
         {
             auto ip = WiFi.localIP().toString();
             auto ssid = WiFi.SSID();
-            auto connectionStatus = new WifiConnectionStatus(true, ip, ssid);
+            auto connectionStatus = new WiFiConnectionStatus(true, ip, ssid);
             Serial.println(connectionStatus->ip);
-            saveCredentialsToEEPROM();
+            GlobalConfig::wiFiReady = true;
             return connectionStatus;
         }
     }
     WiFi.mode(WIFI_AP);
-    return new WifiConnectionStatus(false);
+    return new WiFiConnectionStatus(false);
 }
-
-const int wifiDataAddr = 1;
-
-void WifiSetup::saveCredentialsToEEPROM()
-{
-    EEPROM.begin(1024);
-    String ssid = networkCredentials->ssid;
-    auto password = networkCredentials->password;
-    DynamicJsonDocument dataJsonDocument(1024);
-    dataJsonDocument["ssid"] = networkCredentials->ssid;
-    dataJsonDocument["password"]= networkCredentials->password;
-    char data[256] = {};
-    serializeJson(dataJsonDocument, data);
-    Serial.println(data);
-    EEPROM.put(wifiDataAddr, data);
-    EEPROM.commit();
-};
-
-void WifiSetup::loadCredentialsFromEEPROM()
-{
-    Serial.println("");
-    Serial.println("Loading Credentials");
-    EEPROM.begin(1024);
-    char _ssid[256];
-    EEPROM.get(wifiDataAddr, _ssid);
-    Serial.println("");
-    Serial.println(_ssid);
-};
-
-static void ClearEEPROM(){
- for (unsigned int i = 0; i < EEPROM.length(); i++)
-    {
-        EEPROM.write(i, 0);
-    }
-};
