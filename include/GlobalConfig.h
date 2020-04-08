@@ -3,9 +3,11 @@
 
 class GlobalConfig
 {
+private:
+    static WiFiCredentials *wiFiCredentials;
+
 public:
     static bool wiFiReady;
-    static WiFiCredentials *wiFiCredentials;
     static void save();
     static void load();
 };

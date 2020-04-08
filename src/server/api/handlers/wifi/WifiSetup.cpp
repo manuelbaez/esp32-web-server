@@ -27,7 +27,7 @@ WiFiConnectionStatus *WiFiSetup::connect(bool startup)
 {
     WiFi.mode(WIFI_AP_STA);
     WiFi.begin(networkCredentials->ssid, networkCredentials->password);
-    int maxLookoutCycles = (startup) ? INT_MAX : 20;
+    uint maxLookoutCycles = (startup) ? INT_MAX : 20;
     for (uint i = 0; i < maxLookoutCycles; i++)
     {
         delay(500);
